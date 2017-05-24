@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+	<!-- id to zmienna, możliwosc konkatenacji przez "+" , mozliwosc prepednowania istniejachych wartosci atrybutow (Osobne tagi)-->
+	<div th:with="id=${name + '_id'}" class="" th:fragment="text-input">
+		<label th:attr="for=${id}" th:text="${label}"> : </label> <input
+			th:attr="required=${$isRequired ? 'required' : null}, name=${name}, id=${id}">
+		</input>
+	</div>
+
+
+</body>
+</html>

@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -18,10 +17,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import pl.springui.components.UiComponent;
-import pl.springui.components.exceptions.UiException;
 import pl.springui.components.tree.Tree;
 import pl.springui.components.tree.TreeContainer;
-import pl.springui.utils.Profiler;
 
 /**
  * Fixme - zrobic interfejs, brak ekspozycji innych obiektów - możliwość łatwej
@@ -36,49 +33,36 @@ import pl.springui.utils.Profiler;
 @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UiCtx {
 
-	@Lazy
-	@Autowired(required = true)
-	private ApplicationContext ctx;
-
-	@Autowired(required = true)
 	private ServletWebRequest req;
 
-	@Lazy
-	@Autowired
 	protected TreeContainer trees;
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private int clientIdNoCounter = 0;
 	private boolean productionMode = false;
-	public boolean isProductionMode() {
-		return productionMode;
-	}
 
-	public void setProductionMode(boolean productionMode) {
-		this.productionMode = productionMode;
-	}
-
-	@Profiler
-	public <T extends UiComponent> T get(Class<T> type) {
-		T bean = ctx.getBean(type);
-		return bean;
-	}
-
-	public ApplicationContext getCtx() {
-		return ctx;
-	}
-
-	public void setCtx(ApplicationContext ctx) {
-		this.ctx = ctx;
-	}
-
-	public ServletWebRequest getReq() {
-		return req;
-	}
-
-	public void setReq(ServletWebRequest req) {
+	public UiCtx(@Autowired ServletWebRequest req, @Autowired TreeContainer trees) {
+		super();
 		this.req = req;
+		this.trees = trees;
+	}
+
+	public void clearTree() {
+		trees.getTree(req.getRequest()).clear();
+	}
+
+	public Collection<UiComponent> getAllComponents() {
+		return getTree().getAllComponents();
+
+	}
+
+	public UiComponent getComponent(String componentId) {
+		return trees.getComponent(req.getRequest(), componentId);
+	}
+
+	public String getCurrentUri() {
+		return getReq().getRequest().getRequestURI();
 	}
 
 	public String getNextClientId() {
@@ -86,17 +70,8 @@ public class UiCtx {
 		return "ui-" + clientIdNoCounter; // FIXME - coś z nazwa komponentu
 	}
 
-	private Tree getTree() {
-		return trees.getTree(req.getRequest());
-	}
-
-	public void registerUi(String clientId, UiComponent uiComponent) {
-		getTree().registerUi(clientId, uiComponent);
-	}
-
-	public Collection<UiComponent> getAllComponents() {
-		return getTree().getAllComponents();
-
+	public ServletWebRequest getReq() {
+		return req;
 	}
 
 	/**
@@ -130,6 +105,14 @@ public class UiCtx {
 		return h;
 	}
 
+	private Tree getTree() {
+		return trees.getTree(req.getRequest());
+	}
+
+	public String getViewGuid() {
+		return trees.getTree(req.getRequest()).getKey();
+	}
+
 	/**
 	 * There is at least one request parameter
 	 * 
@@ -138,6 +121,26 @@ public class UiCtx {
 	public boolean hasRequestParameters() {
 		logger.debug("parmeters count: {} ", req.getParameterMap().size());
 		return req.getParameterMap().size() > 0;
+	}
+
+	public boolean isProductionMode() {
+		return productionMode;
+	}
+
+	public boolean isViewInitialization() {
+		return trees.isViewInitialization(req);
+	}
+
+	public void registerUi(String clientId, UiComponent uiComponent) {
+		getTree().registerUi(clientId, uiComponent);
+	}
+
+	public void setProductionMode(boolean productionMode) {
+		this.productionMode = productionMode;
+	}
+
+	public void setReq(ServletWebRequest req) {
+		this.req = req;
 	}
 
 }

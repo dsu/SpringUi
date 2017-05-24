@@ -1,0 +1,86 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorator="templates/fragments/layout.xhtml">
+
+<body>
+	<!-- mozna dodac Dialecty, czyli np wlasna i18 albo może wywolywanie eventow, serializatorow -->
+
+	<!-- element dekorowany -->
+	<div layout:fragment="comments">
+		<div layout:fragment="content">
+			<h1>Custom Dialect</h1>
+			<p hello:sayto="World">Hi ya!</p>
+
+			<h1>Parametryzowane template do pól formularzy</h1>
+			<small>Inkludowanie, może być selektor css elementu z
+				jakiegokolwiek innego pliku, może być podany url pliku, może być
+				wybierany automatycznie, np. na podstawie metody </small>
+			<div
+				th:replace="templates/fragments/fields.xhtml :: text-input (name='jakasnazwa', label=${test})">...</div>
+
+			<h1>Jakiś tekst</h1>
+			<div th:text="'ściółka'" />
+
+			<h1>i18</h1>
+			<p th:text="#{hello}" />
+
+			<h1>Automatyczne toString()</h1>
+			<span th:text="${user}">User</span>
+
+
+			<h1>String z kontekstu</h1>
+			<span th:text="${test}">-test-</span>
+
+			<h1>Dostęp do sesji bezpośredni</h1>
+			<div th:text="${session.mySessionAttribute}">[...]</div>
+
+
+			<h1>Iteracja po wektorze</h1>
+			<select>
+				<option th:each="user : ${users}" th:value="${user.id}"
+					th:text="${user.getLogin()}">brak loginu</option>
+			</select>
+
+
+			<h1>Wywołanie metody</h1>
+			<div th:text="${user.getLogin()}" />
+
+
+			<h1>Switch , case</h1>
+			<div th:switch="${user.id}">
+				<p th:case="'1'">User is an administrator</p>
+				<p th:case="#{roles.manager}">User is a manager</p>
+				<p th:case="*">User is some other thing</p>
+			</div>
+
+			<h1>Sprawdzenie czy parametr requestu test jest null</h1>
+			<div th:if="${param.test != null }" th:text="'Yes, variable exists!'">
+				Doesn't exists</div>
+
+			<h1>If parametr wyświetl parametr</h1>
+			<span th:if="${param.test != null}" th:text="${param.test[0]}">
+				...parametr z requesta test </span>
+
+			<h1>Ustawienie kontekstu - coś jak w apply-templates</h1>
+			<div th:object="${user}">
+				<p>
+					First name: <span th:text="${login}">First name</span>
+				</p>
+			</div>
+
+			<h1>Bardziej zaawansowane include - z layoutDialect, z
+				nadpisaniem części zaimportowanego layoutu</h1>
+
+			<div layout:include="templates/fragments/alert.xhtml :: alert"
+				th:with="type='info', header='Info'" th:remove="tag">
+				<!--/* Implements alert content fragment with simple content */-->
+				<th:block layout:fragment="alert-content">
+					<p>
+						<em>This is a simple list of tasks!</em>
+					</p>
+				</th:block>
+			</div>
+		</div>
+</body>
+</html>

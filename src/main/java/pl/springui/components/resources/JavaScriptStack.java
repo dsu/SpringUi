@@ -11,10 +11,10 @@ import java.lang.annotation.Target;
 @Repeatable(JavaScriptStacks.class)
 public @interface JavaScriptStack {
 
-	public String[] value() default {};
-
 	public String directory() default "";
 
 	public int position() default 100;
+
+	public String[] value() default {};
 
 }

@@ -1,0 +1,10 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<div th:attr="id=${clientId}" class="form-group" th:classappend="${message} ? 'has-' + ${message.type} ">
+	<label th:text="${label}" /> 
+		<input th:name="${name}" class="form-control" type="text" th:value="${value}" /> 
+   		<span th:if="${message}" class="help-block" th:text="${message.message}" ></span>
+   		<!--/* <i><span th:text="${generatedTs}"/></i>  */-->
+</div>
+
+

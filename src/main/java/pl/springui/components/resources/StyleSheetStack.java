@@ -17,10 +17,10 @@ import java.lang.annotation.Target;
 @Repeatable(StyleSheetStacks.class)
 public @interface StyleSheetStack {
 
-	public String[] value() default {};
-
 	public String directory() default "";
 
 	public int position() default 100;
+
+	public String[] value() default {};
 
 }

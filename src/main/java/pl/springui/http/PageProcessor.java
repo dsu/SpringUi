@@ -13,20 +13,16 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
-import pl.springui.components.RootComponent;
 import pl.springui.components.UiComponent;
 import pl.springui.components.exceptions.UiException;
-import pl.springui.components.tree.TreeContainer;
+import pl.springui.components.exceptions.UserVisibleError;
 import pl.springui.utils.Profiler;
 
 @Component
 @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class PageProcessor implements ComponentsProcessor {
 
-	private static final String VIEWGUID_COOKIE = "VIEW_GUID";
-
-	@Autowired
-	protected TreeContainer trees;
+	protected static final String VIEWGUID_COOKIE = "VIEW_GUID";
 
 	@Autowired
 	protected UiCtx ctx;
@@ -49,53 +45,16 @@ public class PageProcessor implements ComponentsProcessor {
 	 */
 	@Override
 	@Profiler
-	public String process(HttpServletRequest request, HttpServletResponse response, UiComponent page) {
+	public void process(HttpServletRequest request, HttpServletResponse response, UiComponent page) {
 
-		trees.clear(request);
-
-		if (ctx.isProductionMode()) {
-			try {
-				writeHtmlPage(request, response, page);
-			} catch (Exception e) {
-				return "redirect:/500.html";
-			}
-		} else {
-			try {
-				writeHtmlPage(request, response, page);
-			} catch (Exception e) {
+		ctx.clearTree();
+		try {
+			writeHtmlPage(request, response, page);
+		} catch (Exception e) {
+			if (ctx.isProductionMode()) {
+				throw new UserVisibleError("500");
+			} else {
 				throw new UiException(e);
-			}
-		}
-
-		return null;
-
-	}
-
-	protected void writeHtmlPage(HttpServletRequest request, HttpServletResponse response, UiComponent page)
-			throws IOException {
-		long currentTimeMillis = System.currentTimeMillis();
-		setHeaders(response);
-		String viewGuid = trees.getTree(request).getKey();
-		Cookies.set(response, VIEWGUID_COOKIE, viewGuid);
-		String result = page.executePhases();
-		// checkForARootComponent();
-		response.getWriter().write(result);
-		response.getWriter().close();
-		logger.debug("ts for viewGuid : {}", viewGuid, (System.currentTimeMillis() - currentTimeMillis));
-	}
-
-	@Deprecated
-	private void checkForARootComponent() {
-		if (!ctx.isProductionMode()) {
-			boolean hasAnyRootComponent = false;
-			for (UiComponent c : ctx.getAllComponents()) {
-				if (c instanceof RootComponent) {
-					hasAnyRootComponent = true;
-					break;
-				}
-			}
-			if (!hasAnyRootComponent) {
-				throw new UiException("There is no root component in the View!");
 			}
 		}
 	}
@@ -104,6 +63,19 @@ public class PageProcessor implements ComponentsProcessor {
 		response.setContentType("text/html;charset=UTF-8");
 		response.setHeader("Pragma", "no-cache");
 		response.setHeader("Cache-Control", "no-cache");
+	}
+
+	protected void writeHtmlPage(HttpServletRequest request, HttpServletResponse response, UiComponent page)
+			throws IOException {
+		long currentTimeMillis = System.currentTimeMillis();
+		setHeaders(response);
+		String viewGuid = ctx.getViewGuid();
+		Cookies.set(response, VIEWGUID_COOKIE, viewGuid);
+		String result = page.executePhases();
+		// checkForARootComponent();
+		response.getWriter().write(result);
+		response.getWriter().close();
+		logger.debug("ts for viewGuid : {}", viewGuid, (System.currentTimeMillis() - currentTimeMillis));
 	}
 
 }

@@ -16,13 +16,13 @@ import pl.springui.http.UiCtx;
 @Scope("prototype")
 public class Scripts extends HtmlImports {
 
+	private static long refreshingParameter = new Date().getTime();
+
 	@Autowired
 	public Scripts(UiCtx ctx) {
 		super(ctx);
 
 	}
-
-	private static long refreshingParameter = new Date().getTime();
 
 	@Override
 	public void applyRequest() {

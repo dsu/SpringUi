@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import pl.springui.components.UiComponent;
-import pl.springui.components.resources.HtmlImports.Link;
 import pl.springui.http.UiCtx;
 
 @Component

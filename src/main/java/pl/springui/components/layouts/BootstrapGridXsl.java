@@ -23,7 +23,7 @@ public class BootstrapGridXsl extends BootstrapGrid {
 	@Override
 	public String renderResponse() {
 		putToViewModel("grid", grid);
-		// List<List<String>> renderedGrid = new ArrayList<>(); //ew. zamian
+		// UserList<UserList<String>> renderedGrid = new ArrayList<>(); //ew. zamian
 		// tutaj wszystkiego
 		return engine.procesTemplateAsString(viewModel, "components/grid.xsl");
 	}

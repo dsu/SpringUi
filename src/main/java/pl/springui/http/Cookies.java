@@ -11,16 +11,6 @@ public class Cookies {
 	 */
 	private static final int MAX_COOKIE_AGE = 60 * 60;
 
-	public static void set(HttpServletResponse response, String name, String value) {
-		Cookie userCookie = new Cookie(name, value);
-		userCookie.setMaxAge(MAX_COOKIE_AGE);
-		// need to be visible for JS
-		userCookie.setSecure(false);
-		// userCookie.setMaxAge(60 * 60 * 24 * 365); // Store cookie for 1 year
-		response.addCookie(userCookie);
-
-	}
-
 	public static Cookie getCookie(HttpServletRequest req, String name) {
 		Cookie[] cookies = req.getCookies();
 		if (cookies != null) {
@@ -31,5 +21,15 @@ public class Cookies {
 			}
 		}
 		return null;
+	}
+
+	public static void set(HttpServletResponse response, String name, String value) {
+		Cookie userCookie = new Cookie(name, value);
+		userCookie.setMaxAge(MAX_COOKIE_AGE);
+		// need to be visible for JS
+		userCookie.setSecure(false);
+		// userCookie.setMaxAge(60 * 60 * 24 * 365); // Store cookie for 1 year
+		response.addCookie(userCookie);
+
 	}
 }

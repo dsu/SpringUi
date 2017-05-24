@@ -20,7 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import pl.springui.components.UiComponent;
 import pl.springui.components.exceptions.UiException;
-import pl.springui.components.tree.TreeContainer;
+import pl.springui.components.exceptions.UserVisibleError;
 import pl.springui.utils.Profiler;
 
 @Component
@@ -30,34 +30,9 @@ public class AjaxProcessor implements AjaxComponentsProcessor {
 	private static final String COMPONENTS_SEPARATOR = ",";
 
 	@Autowired
-	protected TreeContainer trees;
-
-	@Autowired
 	protected UiCtx ctx;
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
-
-	protected void writeComponentAjaxResponse(HttpServletRequest request, HttpServletResponse response,
-			List<UiComponent> components) throws IOException, JSONException {
-		long currentTimeMillis = System.currentTimeMillis();
-
-		JSONArray componetsArray = new JSONArray();
-		for (UiComponent c : components) {
-			c.clearPhases();
-			String result = c.executePhases();
-			JSONObject componetResponse = new JSONObject();
-			componetResponse.put("html", result);
-			componetResponse.put("js", ""); // TODO zamiast zwracania stringa
-											// zwraca obiekt?
-			componetResponse.put("id", c.getClientId());
-			componetsArray.put(componetResponse);
-		}
-
-		logger.debug("Json response: {}", componetsArray);
-		response.getWriter().write(componetsArray.toString());
-		response.getWriter().close();
-		logger.debug("ts: {}", (System.currentTimeMillis() - currentTimeMillis));
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -77,7 +52,7 @@ public class AjaxProcessor implements AjaxComponentsProcessor {
 			for (String componentId : conponentsIds) {
 				if (componentId.length() > 0) {
 					logger.debug("processAjax of a component {}", componentId);
-					UiComponent c = trees.getComponent(request, componentId);
+					UiComponent c = ctx.getComponent(componentId);
 					if (c == null) {
 						throw new RuntimeException("Component " + componentId + "doesn't exists!");
 					}
@@ -86,17 +61,12 @@ public class AjaxProcessor implements AjaxComponentsProcessor {
 			}
 		}
 
-		if (ctx.isProductionMode()) {
-			try {
-				writeComponentAjaxResponse(request, response, components);
-			} catch (Exception e) {
-				throw new UiException("Ajax exception occured"); // TODO - cos
-				// ladniejszego?
-			}
-		} else {
-			try {
-				writeComponentAjaxResponse(request, response, components);
-			} catch (Exception e) {
+		try {
+			writeComponentAjaxResponse(request, response, components);
+		} catch (Exception e) {
+			if (ctx.isProductionMode()) {
+				throw new UserVisibleError("500");
+			} else {
 				throw new UiException(e);
 			}
 		}
@@ -107,6 +77,28 @@ public class AjaxProcessor implements AjaxComponentsProcessor {
 		response.setContentType("application/json;charset=UTF-8");
 		response.setHeader("Pragma", "no-cache");
 		response.setHeader("Cache-Control", "no-cache");
+	}
+
+	protected void writeComponentAjaxResponse(HttpServletRequest request, HttpServletResponse response,
+			List<UiComponent> components) throws IOException, JSONException {
+		long currentTimeMillis = System.currentTimeMillis();
+
+		JSONArray componetsArray = new JSONArray();
+		for (UiComponent c : components) {
+			c.clearPhases();
+			String result = c.executeAjaxPhases();
+			JSONObject componetResponse = new JSONObject();
+			componetResponse.put("html", result);
+			componetResponse.put("js", ""); // TODO zamiast zwracania stringa
+											// zwraca obiekt?
+			componetResponse.put("ids", c.getClientId());
+			componetsArray.put(componetResponse);
+		}
+
+		logger.debug("Json response: {}", componetsArray);
+		response.getWriter().write(componetsArray.toString());
+		response.getWriter().close();
+		logger.debug("ts: {}", (System.currentTimeMillis() - currentTimeMillis));
 	}
 
 }

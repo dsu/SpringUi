@@ -1,0 +1,15 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<form method="POST" th:attr="id=${clientId}">
+
+
+	<!-- TODO - zrobic translacje tych klas z labeli w input fieladach na alerty?, dodac uwzglednianie viewguid przy przetwarzaniu? -->
+	<div th:if="${message}" class="alert"
+		th:classappend="'alert-' + ${message.type}"
+		th:text="${message.message}" />
+
+	<input name="viewguid" type="hidden" th:value="${viewguid}">
+	<th:block th:remove="tag" th:each="field : ${fields}">
+		<div th:remove="tag" th:utext="${field}"></div>
+	</th:block>
+</form>

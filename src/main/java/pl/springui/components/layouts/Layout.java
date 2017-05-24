@@ -36,14 +36,24 @@ public class Layout extends UiComponent {
 		this.engine = engine;
 	}
 
-	@Override
-	public void restoreView() {
-		addChild(content);
-		addChild(fotter);
-		addChild(menu);
-		addChild(headerJs);
-		addChild(headerCss);
-		super.restoreView();
+	public UiComponent getContent() {
+		return content;
+	}
+
+	public UiComponent getFotter() {
+		return fotter;
+	}
+
+	public UiComponent getHeaderCss() {
+		return headerCss;
+	}
+
+	public UiComponent getHeaderJs() {
+		return headerJs;
+	}
+
+	public UiComponent getMenu() {
+		return menu;
 	}
 
 	@Profiler
@@ -57,44 +67,43 @@ public class Layout extends UiComponent {
 		return engine.procesTemplateAsString(viewModel, "components/layout.xhtml");
 	}
 
-	public UiComponent getContent() {
-		return content;
+	protected void writeToViewModel(String key, UiComponent c) {
+
+		if (c == null || key == null) {
+			return;
+		}
+		viewModel.put(key, c.renderResponse());
+
+	}
+
+	@Override
+	public void restoreView() {
+		addChild(content);
+		addChild(fotter);
+		addChild(menu);
+		addChild(headerJs);
+		addChild(headerCss);
+		super.restoreView();
 	}
 
 	public void setContent(UiComponent content) {
 		this.content = content;
 	}
 
-	public UiComponent getFotter() {
-		return fotter;
-	}
-
 	public void setFotter(UiComponent fotter) {
 		this.fotter = fotter;
 	}
 
-	public UiComponent getMenu() {
-		return menu;
-	}
-
-	public void setMenu(UiComponent menu) {
-		this.menu = menu;
-	}
-
-	public UiComponent getHeaderJs() {
-		return headerJs;
+	public void setHeaderCss(UiComponent headerCss) {
+		this.headerCss = headerCss;
 	}
 
 	public void setHeaderJs(UiComponent headerJs) {
 		this.headerJs = headerJs;
 	}
 
-	public UiComponent getHeaderCss() {
-		return headerCss;
-	}
-
-	public void setHeaderCss(UiComponent headerCss) {
-		this.headerCss = headerCss;
+	public void setMenu(UiComponent menu) {
+		this.menu = menu;
 	}
 
 }
