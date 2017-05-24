@@ -31,7 +31,7 @@ import pl.springui.utils.Profiler;
 
 @Component
 @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class Tpage extends UiComponent {
+public class Edit extends UiComponent {
 
 	@Autowired
 	Scripts scripts;
@@ -71,9 +71,9 @@ public class Tpage extends UiComponent {
 	BootstrapGrid grid;
 
 	@Autowired
-	public Tpage(UiCtx ctx) {
+	public Edit(UiCtx ctx) {
 		super(ctx);
-		logger.debug("New tpage");
+		logger.debug("New listPage");
 	}
 
 	@Profiler
@@ -158,7 +158,7 @@ public class Tpage extends UiComponent {
 
 		addChild(layout);
 		super.restoreView();
-		logger.debug("Restore tpage");
+		logger.debug("Restore listPage");
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class Tpage extends UiComponent {
 	 */
 	// @Override
 	// @Cacheable(cacheNames = "pages", keyGenerator = "uiComponentKey", unless
-	// = "@tpage.hasRequestParameters()")
+	// = "@listPage.hasRequestParameters()")
 	// public String executePhases() {
 	// return super.executePhases();
 	// }

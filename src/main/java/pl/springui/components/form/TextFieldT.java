@@ -24,9 +24,19 @@ public class TextFieldT extends AbstractInputField {
 
 	@Override
 	public String renderResponse() {
-		putToViewModel("label", label);
-		putToViewModel("value", value);
-		return engine.procesTemplateAsString(viewModel, "components/input.xhtml");
+		if (!isVisible()) {
+			return renderPlaceHolder();
+		}
+
+		putToViewModel("label", getLabel());
+		putToViewModel("value", getValue());
+		putToViewModel("name", getName());
+		putToViewModel("message", getMessage());
+
+		logger.debug("render text field {}  with a message {} , viewModel message: {}", getLabel(), getMessage(),
+				viewModel.get("message"));
+		String r = engine.procesTemplateAsString(viewModel, "components/input.xhtml");
+		return r;
 	}
 
 }

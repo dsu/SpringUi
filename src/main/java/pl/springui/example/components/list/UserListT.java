@@ -24,15 +24,16 @@ public class UserListT extends AbstractList<User> {
 		this.engine = engine;
 	}
 
+	@Override
+	protected String getTemplatePath() {
+		throw new NotImplementedException("This is an example, there is no template");
+	}
+
 	@Profiler
 	@Override
 	public String renderResponse() {
 		putToViewModel("elements", getCurrentElements());
 		return engine.procesTemplateAsString(viewModel, getTemplatePath());
-	}
-
-	protected String getTemplatePath() {
-		throw new NotImplementedException("This is an example, there is no template");
 	}
 
 }

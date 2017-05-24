@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.ServletWebRequest;
 
 import pl.springui.components.UiComponent;
 import pl.springui.components.exceptions.UiViewExpired;
@@ -45,22 +46,6 @@ public class TreeContainer {
 		}
 	};
 
-	public UiComponent getComponent(HttpServletRequest req, String componentIds) {
-		String key = getCurrentViewGuid(req);
-		Tree tree = trees.get(key);
-		logger.debug("Check tree with key: {} = {}", tree, key);
-
-		logger.debug("All trees {}", trees.size());
-		for (Entry<String, Tree> t : trees.entrySet()) {
-			logger.debug("Existing tree: {}, size: {}", t.getKey(), t.getValue().getAllComponents().size());
-		}
-		if (tree != null) {
-			return tree.getComponent(componentIds);
-		} else {
-			return null;
-		}
-	}
-
 	public void clear(HttpServletRequest req) {
 		String key = getCurrentViewGuid(req);
 		Tree tree = trees.get(key);
@@ -71,34 +56,57 @@ public class TreeContainer {
 
 	}
 
-	public Tree getTree(HttpServletRequest req) {
+	public UiComponent getComponent(HttpServletRequest req, String componentIds) {
 		String key = getCurrentViewGuid(req);
-		logger.debug("get tree {}", key);
+		Tree tree = trees.get(key);
+		logger.trace("Check tree with key: {} = {}", tree, key);
 
-		if (key == null || key.length() < MIN_VIEW_KEY_LENGTH) {
-			key = java.util.UUID.randomUUID().toString();
-			req.setAttribute(VIEWGUID_PARAMETER_NAME, key);
-			Tree newTree = new Tree(key);
-			trees.put(key, newTree);
-			logger.debug("new tree {} inserted", key);
+		logger.trace("All trees {}", trees.size());
+		for (Entry<String, Tree> t : trees.entrySet()) {
+			logger.trace("Existing tree: {}, size: {}", t.getKey(), t.getValue().getAllComponents().size());
+		}
+		if (tree != null) {
+			return tree.getComponent(componentIds);
+		} else {
+			return null;
+		}
+	}
+
+	protected String getCurrentViewGuid(HttpServletRequest req) {
+		// programatically set for the request
+		String viewId = (String) req.getAttribute(VIEWGUID_PARAMETER_NAME);
+		if (viewId == null) {
+			// key from a ajax request
+			return req.getParameter(VIEWGUID_PARAMETER_NAME);
+		} else
+			return viewId;
+	}
+
+	public Tree getTree(HttpServletRequest req) {
+		String viewGuid = getCurrentViewGuid(req);
+		logger.trace("get tree {}", viewGuid);
+
+		if (viewGuid == null || viewGuid.length() < MIN_VIEW_KEY_LENGTH) {
+			viewGuid = java.util.UUID.randomUUID().toString();
+			req.setAttribute(VIEWGUID_PARAMETER_NAME, viewGuid);
+			Tree newTree = new Tree(viewGuid);
+			trees.put(viewGuid, newTree);
+			logger.trace("new tree {} inserted", viewGuid);
 			return newTree;
 		}
 
-		Tree tree = trees.get(key);
+		Tree tree = trees.get(viewGuid);
 		if (tree == null) {
 			// new tree
 			throw new UiViewExpired("View has expired!");
 		}
-		logger.debug("returing tree from the session");
+		logger.trace("returing tree from the session");
 		return tree;
 	}
 
-	protected String getCurrentViewGuid(HttpServletRequest req) {
+	public boolean isViewInitialization(ServletWebRequest req) {
 		String viewId = req.getParameter(VIEWGUID_PARAMETER_NAME);
-		if (viewId == null) {
-			return (String) req.getAttribute(VIEWGUID_PARAMETER_NAME);
-		} else
-			return viewId;
+		return viewId == null;
 	}
 
 }

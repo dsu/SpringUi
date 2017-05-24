@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.stereotype.Component;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.springui.components.UiComponent;
 
 /**
@@ -18,6 +18,7 @@ public class Tree {
 
 	private Map<String, UiComponent> tree = new HashMap<>();
 	private final String key;
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public Tree(String key) {
 		this.key = key;
@@ -26,13 +27,9 @@ public class Tree {
 		}
 	}
 
-	public void registerUi(String clientId, UiComponent uiComponent) {
-		// FIXME exception gdy duplikat
-		tree.put(clientId, uiComponent);
-	}
-
-	public Map<String, UiComponent> getTree() {
-		return tree;
+	public void clear() {
+		logger.debug("clearing the tree");
+		tree.clear();
 	}
 
 	public Collection<UiComponent> getAllComponents() {
@@ -43,11 +40,16 @@ public class Tree {
 		return tree.get(refreshIds);
 	}
 
-	public void clear() {
-		tree.clear();
-	}
-
 	public String getKey() {
 		return key;
+	}
+
+	public Map<String, UiComponent> getTree() {
+		return tree;
+	}
+
+	public void registerUi(String clientId, UiComponent uiComponent) {
+		// FIXME exception gdy duplikat
+		tree.put(clientId, uiComponent);
 	}
 }

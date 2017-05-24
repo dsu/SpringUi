@@ -32,6 +32,18 @@ public class BtnT extends UiComponent {
 		this.engine = engine;
 	}
 
+	public String getLabel() {
+		return label;
+	}
+
+	public String getOnClick() {
+		return onClick;
+	}
+
+	public String getTemplatePath() {
+		return "components/btn.xhtml";
+	}
+
 	@Override
 	@Profiler
 	public String renderResponse() {
@@ -43,20 +55,8 @@ public class BtnT extends UiComponent {
 		return writer.toString();
 	}
 
-	public String getTemplatePath() {
-		return "components/btn.xhtml";
-	}
-
-	public String getLabel() {
-		return label;
-	}
-
 	public void setLabel(String label) {
 		this.label = label;
-	}
-
-	public String getOnClick() {
-		return onClick;
 	}
 
 	public void setOnClick(String onClick) {

@@ -1,12 +1,11 @@
 package pl.springui.template.engine;
 
 import java.io.Writer;
+import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,19 +30,6 @@ import org.w3c.dom.Element;
 @Lazy
 public class XslFlatMapEngine extends AbstractXslEngine implements MapTemplateEngine {
 
-	protected static Document mapToXML(Map<String, Object> model) throws ParserConfigurationException, JAXBException {
-
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		Document doc = dbf.newDocumentBuilder().newDocument();
-
-		for (Entry<String, Object> e : model.entrySet()) {
-			Element xmlE = doc.createElement(StringEscapeUtils.escapeXml(e.getKey()));
-			xmlE.setTextContent((String) e.getValue());
-			doc.getDocumentElement().appendChild(xmlE);
-		}
-		return doc;
-	}
-
 	@XmlRootElement(name = "root")
 	@XmlAccessorType(XmlAccessType.FIELD)
 	protected static class XmlModelWrapper {
@@ -51,6 +37,11 @@ public class XslFlatMapEngine extends AbstractXslEngine implements MapTemplateEn
 		Map<String, Object> model;
 
 		public XmlModelWrapper() {
+		}
+
+		public XmlModelWrapper(Map<String, Object> model) {
+			super();
+			this.model = model;
 		}
 
 		public Map<String, Object> getModel() {
@@ -61,13 +52,25 @@ public class XslFlatMapEngine extends AbstractXslEngine implements MapTemplateEn
 			this.model = model;
 		}
 
-		public XmlModelWrapper(Map<String, Object> model) {
-			super();
-			this.model = model;
-		}
-
 	}
 
+	protected static Document mapToXML(Map<String, Object> model) throws ParserConfigurationException, JAXBException {
+
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		Document doc = dbf.newDocumentBuilder().newDocument();
+
+		Element rootElement = doc.createElement("doc");
+		doc.appendChild(rootElement);
+
+		for (Entry<String, Object> e : model.entrySet()) {
+			Element xmlE = doc.createElement(StringEscapeUtils.escapeXml(e.getKey()));
+			xmlE.setTextContent((String) e.getValue());
+			rootElement.appendChild(xmlE);
+		}
+		return doc;
+	}
+
+	@Override
 	public void procesTemplate(Map<String, Object> model, String templatepath, Writer writer) {
 
 		Document xmlModel;
@@ -76,6 +79,7 @@ public class XslFlatMapEngine extends AbstractXslEngine implements MapTemplateEn
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		xmlModel.getDocumentElement().setAttribute("created-ts", new Date().toString());
 		System.out.println(xmlToString(xmlModel));
 		DOMSource xmlSouroce = new DOMSource(xmlModel);
 

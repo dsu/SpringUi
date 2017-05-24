@@ -28,6 +28,30 @@ import org.w3c.dom.Document;
 @Lazy
 public class XslMapEngine extends AbstractXslEngine implements MapTemplateEngine {
 
+	@XmlRootElement(name = "root")
+	@XmlAccessorType(XmlAccessType.FIELD)
+	protected static class XmlModelWrapper {
+
+		Map<String, Object> model;
+
+		public XmlModelWrapper() {
+		}
+
+		public XmlModelWrapper(Map<String, Object> model) {
+			super();
+			this.model = model;
+		}
+
+		public Map<String, Object> getModel() {
+			return model;
+		}
+
+		public void setModel(Map<String, Object> model) {
+			this.model = model;
+		}
+
+	}
+
 	protected static Document mapToXML(Map<String, Object> model) throws ParserConfigurationException, JAXBException {
 
 		JAXBContext context = JAXBContext.newInstance(XmlModelWrapper.class, java.util.ArrayList.class);
@@ -41,30 +65,7 @@ public class XslMapEngine extends AbstractXslEngine implements MapTemplateEngine
 
 	}
 
-	@XmlRootElement(name = "root")
-	@XmlAccessorType(XmlAccessType.FIELD)
-	protected static class XmlModelWrapper {
-
-		Map<String, Object> model;
-
-		public XmlModelWrapper() {
-		}
-
-		public Map<String, Object> getModel() {
-			return model;
-		}
-
-		public void setModel(Map<String, Object> model) {
-			this.model = model;
-		}
-
-		public XmlModelWrapper(Map<String, Object> model) {
-			super();
-			this.model = model;
-		}
-
-	}
-
+	@Override
 	public void procesTemplate(Map<String, Object> model, String templatepath, Writer writer) {
 
 		Document xmlModel;

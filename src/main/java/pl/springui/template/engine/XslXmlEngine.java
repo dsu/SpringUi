@@ -1,6 +1,7 @@
 package pl.springui.template.engine;
 
 import java.io.Writer;
+import java.util.Date;
 
 import javax.xml.transform.dom.DOMSource;
 
@@ -20,6 +21,7 @@ public class XslXmlEngine extends AbstractXslEngine implements XmlTemplateEngine
 
 	@Override
 	public void procesXmlTemplate(Document document, String templatePath, Writer writer) {
+		document.getDocumentElement().setAttribute("created-ts", new Date().toString());
 		System.out.println(xmlToString(document));
 		DOMSource xmlSouroce = new DOMSource(document);
 		transformXml(templatePath, xmlSouroce, writer);

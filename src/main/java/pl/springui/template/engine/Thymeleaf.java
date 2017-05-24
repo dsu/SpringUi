@@ -3,8 +3,10 @@ package pl.springui.template.engine;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 
@@ -12,16 +14,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slieb.formatter.HtmlExceptionFormatOptions;
 import org.slieb.formatter.HtmlExceptionFormatter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.context.EngineContext;
-import org.thymeleaf.context.IContext;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+
+import pl.springui.components.exceptions.UserVisibleError;
+import pl.springui.components.tree.TreeContainer;
 
 /**
  * 
@@ -33,15 +38,17 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
  */
 @Component
 @Lazy
+@ConfigurationProperties("springui")
 public class Thymeleaf implements MapTemplateEngine {
 
 	public static final String CHARACTER_ENCODING = "UTF-8";
 	public static final String TEMPLATE_FOLDER = "templates/thymeleaf/";
 
-	private TemplateEngine templateEngine;
-
 	private static long CACHE_MS = 1000 * 5;
+
+	private boolean productionMode = false;
 	private static boolean initialized;
+	private TemplateEngine templateEngine;
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@PostConstruct
@@ -68,26 +75,38 @@ public class Thymeleaf implements MapTemplateEngine {
 		logger.debug("thymeleaf initialized: {} ", initialized);
 	}
 
+	@Override
 	public void procesTemplate(Map<String, Object> model, String templatepath, Writer writer) {
 
 		try {
+			model.put("generatedTs", new Date().toString());
 			templatepath = TEMPLATE_FOLDER + File.separator + templatepath;
 			long startTime = System.currentTimeMillis();
+
+			if (logger.isTraceEnabled()) {
+				for (Entry<String, Object> e : model.entrySet()) {
+					logger.trace("model variable {} = {}", e.getKey(), e.getValue());
+				}
+			}
+
 			Context ctx = new Context(Locale.getDefault(), model);
 			templateEngine.process(templatepath, ctx, writer);
 			long estimatedTime = System.currentTimeMillis() - startTime;
-
+			logger.trace("thymeleaf ts: {}", estimatedTime);
 		} catch (Exception e) {
-
 			// Fixme not in production
-			HtmlExceptionFormatOptions options = new HtmlExceptionFormatOptions();
-			options.setPrintDetails(true);
-			String html = new HtmlExceptionFormatter().toString(e);
-			try {
-				writer.write(html);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			logger.warn("Thymelaf error", e);
+			if (!productionMode) {
+				HtmlExceptionFormatOptions options = new HtmlExceptionFormatOptions();
+				options.setPrintDetails(true);
+				String html = new HtmlExceptionFormatter().toString(e);
+				try {
+					writer.write(html);
+				} catch (IOException ex) {
+					logger.warn("Error displaying an error message form Thymeleaf ...", ex);
+				}
+			} else {
+				throw new UserVisibleError("Page cannot be displayed. Report the error please.");
 			}
 
 		}

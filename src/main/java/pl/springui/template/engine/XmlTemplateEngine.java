@@ -2,8 +2,6 @@ package pl.springui.template.engine;
 
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Map;
-
 import org.w3c.dom.Document;
 
 public interface XmlTemplateEngine {

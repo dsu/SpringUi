@@ -21,17 +21,6 @@ import pl.springui.components.exceptions.ComponentRenderingException;
 public class AbstractXslEngine {
 
 	protected static final String TEMPLATE_FOLDER = "templates/xsl/";
-	protected TransformerFactory factory;
-
-	public AbstractXslEngine() {
-		super();
-	}
-
-	@PostConstruct
-	public void init() {
-		factory = TransformerFactory.newInstance();
-	}
-
 	protected static String xmlToString(Document doc) {
 		try {
 			StringWriter sw = new StringWriter();
@@ -47,6 +36,17 @@ public class AbstractXslEngine {
 		} catch (Exception ex) {
 			throw new RuntimeException("Error converting to String", ex);
 		}
+	}
+
+	protected TransformerFactory factory;
+
+	public AbstractXslEngine() {
+		super();
+	}
+
+	@PostConstruct
+	public void init() {
+		factory = TransformerFactory.newInstance();
 	}
 
 	protected void transformXml(String templatepath, DOMSource xmlSouroce, Writer writer) {

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +29,7 @@ import pl.springui.utils.Profiler;
 public class FormT extends UiComponent {
 
 	protected MapTemplateEngine engine;
-	protected List<HTMLRenderer> fields = new ArrayList<HTMLRenderer>();
+	protected List<UiComponent> fields = new ArrayList<UiComponent>();
 
 	@Autowired
 	public FormT(UiCtx ctx, @Qualifier("thymeleaf") MapTemplateEngine engine) {
@@ -41,26 +40,6 @@ public class FormT extends UiComponent {
 	public void add(UiComponent field) {
 		addChild(field);
 		fields.add(field);
-	}
-
-	@Profiler
-	@Override
-	public String renderResponse() {
-		// render fields separately
-		ArrayList<String> renderedFields = new ArrayList<String>();
-		for (HTMLRenderer c : fields) {
-			renderedFields.add(c.renderResponse());
-		}
-		putToViewModel("fields", renderedFields);
-		return engine.procesTemplateAsString(viewModel, "components/form.xhtml");
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((fields == null) ? 0 : fields.hashCode());
-		return result;
 	}
 
 	@Override
@@ -78,6 +57,32 @@ public class FormT extends UiComponent {
 		} else if (!fields.equals(other.fields))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((fields == null) ? 0 : fields.hashCode());
+		return result;
+	}
+
+	@Profiler
+	@Override
+	public String renderResponse() {
+		if (!isVisible()) {
+			return renderPlaceHolder();
+		}
+		// render fields separately
+		ArrayList<String> renderedFields = new ArrayList<String>();
+		for (HTMLRenderer c : fields) {
+			renderedFields.add(c.renderResponse());
+		}
+
+		putToViewModel("fields", renderedFields);
+		putStringToViewModel("viewguid", ctx.getViewGuid());
+
+		return engine.procesTemplateAsString(viewModel, "components/form.xhtml");
 	}
 
 }

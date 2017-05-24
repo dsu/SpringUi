@@ -11,16 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-		// auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
-		// auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
-		// auth.inMemoryAuthentication().withUser("dba").password("dba").roles("ADMIN",
-		// "DBA");
-	}
-
-
-
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
@@ -37,12 +27,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
 
-	private void disableForConsole(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/").permitAll().and().authorizeRequests()
-		.antMatchers("/console/**").permitAll();
-
-		http.csrf().disable();
-		http.headers().frameOptions().disable();
+	@Autowired
+	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
+		// auth.inMemoryAuthentication().withUser("user").password("user").roles("USER");
+		// auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
+		// auth.inMemoryAuthentication().withUser("dba").password("dba").roles("ADMIN",
+		// "DBA");
 	}
 
 
@@ -50,5 +40,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	private void disableAll(HttpSecurity http) throws Exception {
 		http.csrf().disable();
 		http.authorizeRequests().antMatchers("/*").permitAll();
+	}
+
+
+
+	private void disableForConsole(HttpSecurity http) throws Exception {
+		http.authorizeRequests().antMatchers("/").permitAll().and().authorizeRequests()
+		.antMatchers("/console/**").permitAll();
+
+		http.csrf().disable();
+		http.headers().frameOptions().disable();
 	}
 }
