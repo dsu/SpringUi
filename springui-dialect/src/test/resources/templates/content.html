@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:springui="http://springui.pl/springui" layout:decorator="layout">
+<head>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+	integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r"
+	crossorigin="anonymous" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" />
+<script type="text/javascript" src="/js/js.cookie.min.js"></script>
+<script type="text/javascript" src="/js/ui.js"></script>
+</head>
+<body>
+	<section layout:fragment="content">
+		<div class="row">
+			<div class="col-md-12">
+				<h3>This page demonstrates how to embeeded and configure a
+					SpringUi components inside a Thymeleaf SpringMVC page.</h3>
+				<h4>
+					Click on one of the buttons to initiate AJAX refresh. Number of
+					clicks is stored in a<i>TreeContainer</i>. This is an object that
+					stores components and custom attributes as number of clicks.
+				</h4>
+				<br />
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div id="ui-btn1"
+					sui:component="{bean:'btnT',label:'Click me!', onClick:'incBtn();'}">Placeholder</div>
+			</div>
+			<div class="col-md-6">
+				<div id="ui-btn2"
+					sui:component="{bean:'btnT',label:'Click me!', onClick:'incBtn();'}">Placeholder</div>
+			</div>
+		</div>
+		<script>
+			function incBtn() {
+				Ui.load({
+					ids : [ 'ui-btn2', 'ui-btn1' ],
+					listeners : [ 'btnListener' ],
+					actions : [ 'incrementBtn' ]
+				});
+			}
+		</script>
+	</section>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<form method="POST" th:attr="id=${clientId}">
+	<input type="hidden" name="formguid" th:value="${formguid}"/>
+	<input name="viewguid" type="hidden" th:value="${viewguid}">
+
+	<div th:if="${message}" class="alert"
+		th:classappend="'alert-' + ${message.type}"
+		th:text="${message.message}" />
+	
+	<th:block th:remove="tag" th:each="field : ${fields}">
+		<div th:remove="tag" th:utext="${field}"></div>
+	</th:block>
+</form>

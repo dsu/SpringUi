@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://www.ehcache.org/ehcache.xsd"
+	updateCheck="true" monitoring="autodetect" dynamicConfig="true">
+
+	<cache name="cms" maxElementsInMemory="1000" eternal="false"
+		overflowToDisk="false" memoryStoreEvictionPolicy="LFU"
+		timeToLiveSeconds="3600" timeToIdleSeconds="3600" statistics="true"
+		transactionalMode="off">
+	</cache>
+
+	<cache name="stopka" maxElementsInMemory="1000" eternal="false"
+		overflowToDisk="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600"
+		statistics="true" transactionalMode="off">
+	</cache>
+
+	<cache name="topmenu" maxElementsInMemory="1000" eternal="false"
+		overflowToDisk="false" timeToLiveSeconds="3600" timeToIdleSeconds="3600"
+		statistics="true" transactionalMode="off">
+	</cache>
+
+	<cache name="db" maxElementsInMemory="5000" eternal="false"
+		overflowToDisk="false" timeToLiveSeconds="1200" timeToIdleSeconds="1200"
+		statistics="true" transactionalMode="off">
+	</cache>
+
+	<cache name="trees" maxElementsInMemory="9000" eternal="false"
+		overflowToDisk="false" timeToLiveSeconds="28800" timeToIdleSeconds="1800"
+		statistics="true" transactionalMode="off"></cache>
+
+</ehcache>

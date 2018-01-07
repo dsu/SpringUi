@@ -1,0 +1,12 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<div th:id="${clientId}">
+	<div class="row" th:each="row : ${grid}">
+		<!-- TODO ustawianie klasy -->
+		<div th:attr="class=${'col-md-' + 12/row.size()}"
+			th:each="col : ${row}">
+			<!--  th:utext="${col.renderResponse()} , ${execInfo.now.time}- dlugi czas wykonania -->
+			<block th:if=${col} th:remove="tag"
+				th:utext="${col.renderResponse()}"></block>
+		</div>
+	</div>
+</div>

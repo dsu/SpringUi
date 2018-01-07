@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>[[${status}]]</title>
+
+
+<link href="/inspinia/css/bootstrap.min.css" rel="stylesheet" />
+<link href="/font-awesome/css/font-awesome.css" rel="stylesheet" />
+
+<link href="/inspinia/css/animate.css" rel="stylesheet" />
+<link href="/inspinia/css/style.css" rel="stylesheet" />
+
+</head>
+
+<body class="gray-bg">
+
+
+	<div class="middle-box text-center animated fadeInDown">
+
+		<h1 th:text="${status != null ? status : '404'}">404</h1>
+
+		<h3 class="font-bold" th:utext="${error}"></h3>
+
+		<div class="error-desc">
+			<p th:if="${message}" th:text="${message}"></p>
+			<form class="form-inline m-t" role="form">
+				<div class="form-group">
+					<a href="/">Wróć na stronę główną</a>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+	<!-- Mainly scripts -->
+	<script src="/js/jquery-2.1.1.js"></script>
+	<script src="/inspinia/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

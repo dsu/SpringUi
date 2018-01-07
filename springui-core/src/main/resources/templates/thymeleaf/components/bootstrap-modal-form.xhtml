@@ -1,0 +1,25 @@
+<div th:attr="id=${clientId}" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<form class="modal-content modal-form" th:action="${formAction}">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title" th:text="${title}"></h4>
+			</div>
+			<div class="modal-body">
+				<div th:utext="${body}"></div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+				<button type="submit"  onclick="afterSumbitModal()" class="btn btn-success">OK</button>
+			</div>
+		</form>
+	</div>
+	<script th:inline="javascript">
+		function afterSumbitModal(){
+			var clientId = [[${clientId}]];
+			$('#'+clientId).modal('hide');
+			
+		}
+		$('.modal-backdrop').remove();
+	</script>
+</div>
