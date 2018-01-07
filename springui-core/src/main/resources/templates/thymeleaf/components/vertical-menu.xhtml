@@ -1,0 +1,35 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<nav class="navbar-default navbar-static-side" role="navigation"
+	th:attr="id=${clientId}">
+	<div class="sidebar-collapse">
+		<ul class="nav metismenu" id="side-menu">
+
+			<li class="nav-header">
+				<div class="dropdown profile-element" style="text-align: center;">
+					<span> <img style="max-width: 155px; padding: 10px"
+						th:if="${image}" alt="logo" class="img" th:attr="src=${image}" />
+					</span>
+					<!--/* TODO logged info */-->
+				</div>
+				<div class="logo-element"></div>
+			</li>
+
+
+			<!--/* menu fragment */-->
+			<li th:classappend="${item.active} ? active : not-active"
+				th:each="item : ${menu}" th:fragment="menu"><a
+				th:attr="href=${item.href}"> <i th:if="${item.icon}"
+					th:attr="class=${'fa ' + item.icon}"></i> <span class="nav-label"
+					th:utext="${item.label}"></span>
+			</a>
+
+				<ul th:if="${!item.menu.empty}" class="nav nav-second-level">
+					<div th:replace=":: menu ( menu=${item.menu})">...</div>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</nav>
+
+
+

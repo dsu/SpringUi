@@ -1,0 +1,31 @@
+<div th:attr="id=${clientId}" class="form-group"
+	th:classappend="${message} ? 'has-' + ${message.type} ">
+	<label th:text="${label}" /> <input th:name="${name}"
+		class="form-control" type="text" th:value="${value}" /> <span
+		th:if="${message}" class="help-block" th:text="${message.message}"></span>
+	<!--/* <i><span th:text="${generatedTs}"/></i>  */-->
+
+   <!--  UNCOMMENT IF NOT IMPORTED EARLIER -->
+ 	<!--  
+	<script
+		src="/js_libs/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="/js_libs/bootstrap-datetimepicker/js/pl.js"></script>
+	
+	-->
+	<script th:inline="javascript">
+	var clientId = [[${clientId}]];
+	$('#' + clientId + ' input').datetimepicker({
+		locale : 'pl',
+		format : 'YYYY-MM-DD HH:mm'
+	});
+</script>
+
+	<link
+		href="/js_libs/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"
+		rel="stylesheet">
+	<style>
+.datepicker th {
+	background-color: inherit;
+}
+</style>
+</div>

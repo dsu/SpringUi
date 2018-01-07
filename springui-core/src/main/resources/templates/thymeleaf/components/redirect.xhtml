@@ -1,0 +1,22 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="refresh" th:content="${'0; url=' + uri}">
+
+	<!-- 
+<script type="text/javascript">
+	window.location.href = "http://example.com"
+</script>
+ -->
+<title>Page Redirection</title>
+</head>
+<body style="background-color: #f3f3f4;padding:40px;">
+	<center>
+		<h3>
+			Za chwilę zostaniesz przeniesiony do dokumentu. Jeżeli to się nie
+			stanie, kliknij w <a th:href="${uri}">link</a>.
+		</h3>
+	</center>
+</body>
+</html>
