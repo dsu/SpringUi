@@ -1,4 +1,5 @@
-# SpringUi
+# SpringUi 
+![alt text](https://github.com//dsu/images/blob/master/logo.png?raw=true "logo")
 
 ## Motivations
 
@@ -43,7 +44,6 @@ SpringUi pages are build on top of RestControllers. RestController methods can r
 ## DOC
 
 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "alt")
 
 You create a component by extending an abstract class *UiComponent*.
 A component can have children components.
@@ -146,3 +146,11 @@ public class SimpleThymeleafLayout extends UiComponent {
 
 }
 ```
+
+Examples screenshoot:
+
+![alt text](https://github.com//dsu/images/blob/master/crud.png?raw=true "CRUD")
+
+![alt text](https://github.com//dsu/images/blob/master/crud-validation.png?raw=true "Validation")
+
+![alt text](https://github.com//dsu/images/blob/master/cms.png?raw=true "Simple CMS ")
