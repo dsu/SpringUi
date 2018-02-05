@@ -145,7 +145,7 @@ public class SimpleThymeleafLayout extends UiComponent {
 }
 ```
 
-### Screenshoot from the examples project:
+### Screenshoot from the examples project
 
 ![alt text](https://github.com//dsu/images/blob/master/crud.png?raw=true "CRUD")
 *CRUD example*
