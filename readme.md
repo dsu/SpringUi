@@ -112,6 +112,20 @@ class ExampleController {
 }
 ```
 
+The components allow you to generate a CRUD using annotations. You can see some examples in a ```examples``` module of this project.
+
+```java
+@ListColumn(name = "userId", key = true, visible = false)
+public int getUserId() {
+	return userId;
+}
+
+@FormInput(type = InputType.NUMBER)
+public void setAge(Integer age) {
+	this.age = age;
+}
+```
+
 An example of a simple component.
 
 ```java
