@@ -14,33 +14,34 @@ import pl.springui.template.engine.MapTemplateEngine;
 @EqualsAndHashCode
 public class MediaCatalogFieldT extends AbstractInputField {
 
-	protected MapTemplateEngine engine;
+  protected MapTemplateEngine engine;
 
-	@Autowired
-	public MediaCatalogFieldT(UiCtx ctx, @Qualifier("thymeleaf") MapTemplateEngine engine) {
-		super(ctx);
-		this.engine = engine;
-	}
+  @Autowired
+  public MediaCatalogFieldT(UiCtx ctx, @Qualifier("thymeleaf") MapTemplateEngine engine) {
+    super(ctx);
+    this.engine = engine;
+  }
 
-	@Override
-	public String renderResponse() {
-		if (!isVisible()) {
-			return renderPlaceHolder();
-		}
+  @Override
+  public String renderResponse() {
+    if (!isVisible()) {
+      return renderPlaceHolder();
+    }
 
-		putToViewModel("label", getLabel());
-		putToViewModel("value", getValue());
-		putToViewModel("name", getName());
-		putToViewModel("message", getMessage());
+    putToViewModel("label", getLabel());
+    putToViewModel("value", getValue());
+    putToViewModel("name", getName());
+    putToViewModel("message", getMessage());
 
-		logger.debug("render text field {}  with a message {} , viewModel message: {}", getLabel(), getMessage(),
-				viewModel.get("message"));
-		String r = engine.procesTemplateAsString(viewModel, getTemplatePath());
-		return r;
-	}
+    logger.debug("render text field {}  with a message {} , viewModel message: {}", getLabel(),
+        getMessage(), viewModel.get("message"));
+    String r = engine.procesTemplateAsString(viewModel, getTemplatePath());
+    return r;
+  }
 
-	protected String getTemplatePath() {
-		return "components/fields/mediacatalog.xhtml";
-	}
+  protected String getTemplatePath() {
+    return "components/fields/mediacatalog.xhtml";
+
+  }
 
 }

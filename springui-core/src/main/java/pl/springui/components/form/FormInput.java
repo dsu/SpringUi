@@ -12,23 +12,23 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FormInput {
 
-	public int column() default 0;
+  public int column() default 0;
 
-	String name() default "";
+  String name() default "";
 
-	public int row() default 0;
+  public int row() default 0;
 
-	public String[] options() default "";
+  public String[] options() default "";
 
-	InputType type() default InputType.TEXT;
+  InputType type() default InputType.TEXT;
 
-	String label() default "";
+  String label() default "";
 
-	/**
-	 * Role that user need to have in order to be able to edit this field
-	 * 
-	 * @return
-	 */
-	public String securityRole() default "";
+  /**
+   * Role that user need to have in order to be able to edit this field
+   * 
+   * @return
+   */
+  public String securityRole() default "";
 
 }
