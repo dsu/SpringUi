@@ -207,6 +207,8 @@ public class AutoFormT<T> extends UiComponent {
           InputType type = colMeta.type();
           String name = colMeta.name();
           String label = colMeta.label();
+          String[] options = colMeta.options();
+          String role = colMeta.securityRole();
 
           if (name == null || name.equals("")) {
             name = prop.getDisplayName();
@@ -259,7 +261,15 @@ public class AutoFormT<T> extends UiComponent {
               field.setValue(String.valueOf(value));
             }
             addToGrid(field, row, col);
-
+          } else if (type.equals(InputType.SELECT)) {
+            SelectFieldT field = new SelectFieldT(ctx, engine);
+            field.setLabel(label);
+            field.setName(name);
+            field.setOptions(options);
+            if (value != null) {
+              field.setValue(String.valueOf(value));
+            }
+            addToGrid(field, row, col);
           } else {
             TextFieldT field = new TextFieldT(ctx, engine);
             field.setLabel(label);

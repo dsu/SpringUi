@@ -22,10 +22,6 @@ public class MediaCatalogFieldT extends AbstractInputField {
 		this.engine = engine;
 	}
 
-	protected String getTemplatePath() {
-		return "components/fields/mediacatalog.xhtml";
-	}
-
 	@Override
 	public String renderResponse() {
 		if (!isVisible()) {
@@ -41,6 +37,10 @@ public class MediaCatalogFieldT extends AbstractInputField {
 				viewModel.get("message"));
 		String r = engine.procesTemplateAsString(viewModel, getTemplatePath());
 		return r;
+	}
+
+	protected String getTemplatePath() {
+		return "components/fields/mediacatalog.xhtml";
 	}
 
 }

@@ -128,7 +128,21 @@ public class AjaxProcessor implements AjaxComponentsProcessor {
       if (AopUtils.getTargetClass(c.getClass()).isAssignableFrom(JsRenderer.class)) {
         componetResponse.put("js", ((JsRenderer) c).renderJs());
       } else {
-        componetResponse.put("js", "");
+
+        try {
+          // try anyway .. bug in isAssignableFrom.
+          String js = ((JsRenderer) c).renderJs();
+          componetResponse.put("js", js);
+          logger.debug(
+              "Forced cast to JsRenderer has succeed class: {}, Aop target class :  {}, assignable (1):{}, assignable (2):{}",
+              c.getClass(), AopUtils.getTargetClass(c.getClass()),
+              AopUtils.getTargetClass(c.getClass()).isAssignableFrom(JsRenderer.class),
+              c.getClass().isAssignableFrom(JsRenderer.class));
+
+        } catch (Exception e) {
+          componetResponse.put("js", "");
+        }
+
       }
       componetResponse.put("ids", c.getClientId());
       componetsArray.put(componetResponse);
