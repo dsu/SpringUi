@@ -1,0 +1,10 @@
+<div th:attr="id=${clientId}" class="form-group" th:classappend="${message} ? 'has-' + ${message.type} ">
+	<label th:text="${label}" /> 
+		<select th:name="${name}" class="form-control"  >
+			<option th:each="opt : ${options}"  th:selected="${value == opt}" th:value="${opt}">[[${opt}]]</option>
+		</select> 
+   		<span th:if="${message}" class="help-block" th:text="${message.message}" ></span>
+   		<!--/* <i><span th:text="${generatedTs}"/></i>  */-->
+</div>
+
+
